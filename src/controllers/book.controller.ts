@@ -8,7 +8,10 @@ import { sendNotFoundResponse, sendSuccessNoDataResponse, sendSuccessResponse } 
 
 export const listBooks = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const books = await BookService.listBooks();
+    const page = parseInt(request.query.page as string, 10) || 1;
+    const limit = parseInt(request.query.limit as string, 10) || 10;
+
+    const books = await BookService.listBooks({ page, limit });
     return sendSuccessResponse(response, books);
   } catch (error: any) {
     next(error);

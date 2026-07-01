@@ -13,8 +13,15 @@ import { pino } from "pino";
 
 dotenv.config();
 
+// --- DIAGNÓSTICO TEMPORAL ---
+console.log('CWD:', process.cwd());
+console.log('PORT desde .env:', process.env.PORT);
+// -----------------------------
+
 export const logger = pino({ name: "server start" });
-const PORT: number = parseInt(process.env.PORT as string, 10);
+
+// Fallback: si PORT no carga bien, usa 3000 en vez de tronar con NaN
+const PORT: number = parseInt(process.env.PORT as string, 10) || 3000;
 
 const app = express();
 
@@ -41,6 +48,11 @@ app.use('/api/auth', authRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/authors', authorRouter);
 app.use('/api/books', bookRouter);
+
+// Ruta de bienvenida
+app.get('/', (req, res) => {
+  res.json({ message: 'API funcionando correctamente 🚀' });
+});
 
 // Not Found Middleware
 app.use(notFoundHandler);
